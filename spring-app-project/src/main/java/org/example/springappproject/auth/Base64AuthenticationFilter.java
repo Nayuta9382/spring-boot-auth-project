@@ -1,4 +1,5 @@
 package org.example.springappproject.auth;
+import org.springframework.util.AntPathMatcher;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 // base64認証を行うフィルタークラス
 @Component
@@ -20,21 +22,32 @@ public class Base64AuthenticationFilter extends OncePerRequestFilter {
 
     private final Base64Service base64Service;
     private final AuthenticationManager authenticationManager;
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     public Base64AuthenticationFilter(Base64Service base64Service, AuthenticationManager authenticationManager) {
         this.base64Service = base64Service;
         this.authenticationManager = authenticationManager;
     }
 
+    // 認証対象のURLリスト
+    private final List<String> protectedUrls = List.of(
+            "/users/**",
+            "/close/"
+    );
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        // 認証不要のパスを定義
+        // 認証が必要ないもとは認証しない
         String requestPath = request.getRequestURI();
-        if(requestPath.contains("/signup")){
+        boolean isPermitted = protectedUrls.stream()
+                .anyMatch(pattern -> pathMatcher.match(pattern, requestPath));
+
+        if (!isPermitted) {
             filterChain.doFilter(request, response);
             return;
         }
+
 
         //　リクエストからトークンを取得
         String token = base64Service.getBase64FromRequest(request);
