@@ -10,6 +10,7 @@ import org.example.springappproject.dto.response.user.update.UserUpdateResponseS
 import org.example.springappproject.entity.User;
 import org.example.springappproject.exception.*;
 import org.example.springappproject.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,9 +19,11 @@ import java.util.Date;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // ユーザ情報を取得する
@@ -52,7 +55,9 @@ public class UserService {
         }
 
 
-        userRepository.insertUser(userId, password);
+
+        String encodedPassword = passwordEncoder.encode(password);
+        userRepository.insertUser(userId, encodedPassword);
     }
 
     // ユーザ情報を更新する

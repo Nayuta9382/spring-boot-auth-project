@@ -1,5 +1,6 @@
-# docker/Dockerfile
-# マルチステージビルドで最適化
+# =============================
+# ビルドステージ
+# =============================
 FROM eclipse-temurin:17-jdk-alpine AS builder
 
 WORKDIR /build
@@ -21,20 +22,26 @@ COPY spring-app-project/src src
 # アプリケーションをビルド
 RUN ./mvnw clean package -DskipTests -B
 
+
 # =============================
-# 実行用の軽量イメージ
+# 実行ステージ
 # =============================
 FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
-# 非rootユーザーを作成
+# 非rootユーザー作成
 RUN addgroup -S spring && adduser -S spring -G spring
 
-# ビルドステージからjarファイルをコピー
+# jarファイルコピー
 COPY --from=builder /build/target/*.jar app.jar
 
-# ユーザーを切り替え
+# application.properties を JAR と別パスに置く
+COPY spring-app-project/src/main/resources/application.properties /app/config/application.properties
+
+# Spring Boot に外部設定ファイルを読み込ませる
+ENV SPRING_CONFIG_LOCATION=file:/app/config/application.properties
+
 USER spring:spring
 
 EXPOSE 8080
