@@ -32,7 +32,7 @@ public class Base64AuthenticationFilter extends OncePerRequestFilter {
     // 認証対象のURLリスト
     private final List<String> protectedUrls = List.of(
             "/users/**",
-            "/close/"
+            "/close/**"
     );
 
     @Override
