@@ -1,0 +1,59 @@
+# =============================
+# IntelliJ IDEA / IDE 関連
+# =============================
+.idea/
+*.iml
+*.iws
+out/
+
+# =============================
+# Maven / Gradle ビルド
+# =============================
+# Maven
+target/
+# Gradle
+build/
+.gradle/
+!gradle-wrapper.jar
+
+# =============================
+# ローカル環境固有
+# =============================
+*.log
+*.tmp
+*.swp
+.DS_Store
+*.class
+
+# =============================
+# Spring Boot / Java
+# =============================
+*.jar
+*.war
+*.ear
+*.class
+spring-app-project/.settings/
+
+# =============================
+# IDE / OS が作る一時ファイル
+# =============================
+*.bak
+*.orig
+*.old
+*.rej
+*.swo
+*.swn
+
+# =============================
+# spring-app-project の設定ファイルや秘密情報
+# =============================
+spring-app-project/*.keystore
+spring-app-project/*.jks
+spring-app-project/.env
+
+# =============================
+# その他
+# =============================
+*.h2.db
+*.mv.db
+.env

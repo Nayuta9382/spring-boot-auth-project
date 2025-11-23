@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  # Spring Bootアプリケーション
+  spring-app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: spring-app
+    restart: unless-stopped
+    environment:
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_PORT: ${DATABASE_PORT}
+      BASE64_TOKEN_SECRETKEY: ${BASE64_TOKEN_SECRETKEY}
+      TZ: Asia/Tokyo
+      JAVA_OPTS: -Xms256m -Xmx512m
+    ports:
+      - "8080:8080"
+    networks:
+      - spring-network
+
+networks:
+  spring-network:
+    driver: bridge
